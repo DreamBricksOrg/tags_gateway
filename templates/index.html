@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tags Monitor</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        table { width: 50%; margin: auto; border-collapse: collapse; }
+        th, td { padding: 10px; border: 1px solid black; }
+        .green { background-color: lightgreen; }
+        .white { background-color: white; }
+    </style>
+</head>
+<body>
+
+    <h2>Tags Monitor</h2>
+    <table id="deviceTable">
+        <tr>
+            <th>MAC Address</th>
+            <th>Last Seen</th>
+        </tr>
+    </table>
+
+    <script>
+        var socket = io();
+
+        socket.on("update_data", function(data) {
+            var table = document.getElementById("deviceTable");
+            table.innerHTML = "<tr><th>MAC Address</th><th>Last Seen</th></tr>"; // Clear table
+
+            for (var mac in data) {
+                var row = table.insertRow(-1);
+                var cellMac = row.insertCell(0);
+                var cellTime = row.insertCell(1);
+
+                cellMac.textContent = mac;
+                cellTime.textContent = new Date(data[mac][1]).toLocaleString();
+
+                cellMac.className = data[mac][0] ? "green" : "white"; // Change background color
+            }
+        });
+    </script>
+
+</body>
+</html>
